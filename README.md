@@ -154,20 +154,26 @@ python run_DyberPet.py
 
 ### 语音管线配置
 
-编辑 `DyberPet/voice_assistant.py` 头部：
+复制配置模板（**不要**直接编辑原文件，它含敏感 API Key）：
 
-```python
-# LLM API（兼容 OpenAI / Anthropic 格式）
-API_CHAT = "http://127.0.0.1:8765/anthropic/messages"
-API_KEY = "sk-09d96de2e44d47a1a2b6477758d5f285"
-
-# TTS 服务（IndexTTS / 任意 API）
-API_TTS = "http://117.50.248.152:6006/"
-TTS_VOICE = "shaonv-isolated.wav"    # 音色文件名
+```bash
+cp config_voice.example.json config_voice.json
 ```
 
-**更换 Whisper 模型路径**（默认 `~/.cache/faster-whisper/tiny-copy/`）：
-在 `voice_assistant.py` 中修改 `_load_whisper()` 方法里的模型路径。
+编辑 `config_voice.json`：
+
+```json
+{
+  "api_chat": "http://127.0.0.1:8765/anthropic/messages",
+  "api_key": "sk-your-key-here",
+  "api_tts": "http://your-tts-server:6006/",
+  "tts_voice": "your-voice.wav",
+  "whisper_model_path": "~/.cache/faster-whisper/tiny-copy/",
+  "system_prompt": "用简短的中文回答，不超过50字。"
+}
+```
+
+该文件已加入 `.gitignore`，不会提交到仓库。
 
 ---
 

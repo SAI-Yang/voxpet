@@ -1,0 +1,8 @@
+{
+  "api_chat": "http://127.0.0.1:8765/anthropic/messages",
+  "api_key": "sk-your-api-key-here",
+  "api_tts": "http://your-tts-server:6006/",
+  "tts_voice": "your-voice-file.wav",
+  "whisper_model_path": "~/.cache/faster-whisper/tiny-copy/",
+  "system_prompt": "用简短的中文回答，不超过50字。"
+}

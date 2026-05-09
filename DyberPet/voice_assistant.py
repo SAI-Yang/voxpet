@@ -3,9 +3,12 @@
 
 集成进 DyberPet：
   右键菜单点击 "🎤 语音助手" → 录音 → 宠物冒泡显示状态 → TTS 播报
+
+配置：编辑项目根目录下的 config_voice.json（勿提交到 git）。
 """
 import os
 import sys
+import json
 import time
 import tempfile
 import threading
@@ -19,10 +22,22 @@ from PySide6.QtCore import QObject, Signal
 import DyberPet.settings as settings
 
 SAMPLE_RATE = 16000
-API_CHAT = "http://127.0.0.1:8765/anthropic/messages"
-API_KEY = "sk-09d96de2e44d47a1a2b6477758d5f285"
-API_TTS = "http://117.50.248.152:6006/"
-TTS_VOICE = "shaonv-isolated.wav"
+
+# ── 从外部配置文件加载（不提交 git） ────────────
+_config = {}
+_cfg_path = Path(__file__).parent.parent / "config_voice.json"
+if _cfg_path.exists():
+    try:
+        _config = json.loads(_cfg_path.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+
+API_CHAT = _config.get("api_chat", "http://127.0.0.1:8765/anthropic/messages")
+API_KEY = _config.get("api_key", "")
+API_TTS = _config.get("api_tts", "")
+TTS_VOICE = _config.get("tts_voice", "")
+WHISPER_PATH = _config.get("whisper_model_path", "")
+SYSTEM_PROMPT = _config.get("system_prompt", "用简短的中文回答，不超过50字。")
 
 
 class VoiceAssistant(QObject):
@@ -120,7 +135,7 @@ class VoiceAssistant(QObject):
             if self._whisper_model is not None:
                 return
             from faster_whisper import WhisperModel
-            mp = str(Path.home() / ".cache" / "faster-whisper" / "tiny-copy")
+            mp = WHISPER_PATH or str(Path.home() / ".cache" / "faster-whisper" / "tiny-copy")
             self._whisper_model = WhisperModel(mp, device="cpu", compute_type="int8")
 
     def _transcribe(self, audio):
@@ -138,7 +153,7 @@ class VoiceAssistant(QObject):
                 API_CHAT,
                 json={
                     "model": "deepseek-v4-flash",
-                    "system": "用简短的中文回答，不超过50字。",
+                    "system": SYSTEM_PROMPT,
                     "messages": [{"role": "user", "content": text}],
                     "max_tokens": 200,
                 },

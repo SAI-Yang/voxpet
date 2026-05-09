@@ -24,3 +24,6 @@ Thumbs.db
 
 # Qt
 *.qm
+
+# Voice assistant config (contains API keys)
+config_voice.json
