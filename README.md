@@ -164,7 +164,7 @@ cp config_voice.example.json config_voice.json
 
 ```json
 {
-  "api_chat": "http://127.0.0.1:8765/anthropic/messages",
+  "api_chat": "http://127.0.0.1:xxxx/anthropic/messages",
   "api_key": "sk-your-key-here",
   "api_tts": "http://your-tts-server:6006/",
   "tts_voice": "your-voice.wav",
